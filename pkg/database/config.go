@@ -13,6 +13,7 @@ type Config struct {
 	AppName       string
 	AppSecret     string
 	AppPortSocket string
+	MongoDBUri    string
 }
 
 func LoadConfig() *Config {
@@ -27,5 +28,6 @@ func LoadConfig() *Config {
 		AppName:       env.GetEnv("APP_NAME", ""),
 		AppSecret:     env.GetEnv("APP_SECRET", ""),
 		AppPortSocket: env.GetEnv("APP_PORT_SOCKET", ":4001"),
+		MongoDBUri:    env.GetEnv("MONGODB_URI", ""),
 	}
 }

@@ -1,11 +1,15 @@
 package database
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/hilmiikhsan/simple-messaging-app/app/models"
+	"github.com/hilmiikhsan/simple-messaging-app/pkg/env"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -37,4 +41,20 @@ func SetupDatabase() (*gorm.DB, *Config) {
 	}
 
 	return DB, cfg
+}
+
+func SetupMongoDB() {
+	uri := env.GetEnv("MONGODB_URI", "")
+
+	client, err := mongo.Connect(context.TODO(), options.Client().
+		ApplyURI(uri))
+	if err != nil {
+		log.Fatal("Failed to connect to MongoDB: ", err)
+		panic(err)
+	}
+
+	coll := client.Database("messaging_db").Collection("message_history")
+	MongoDB = coll
+
+	log.Println("Connected to MongoDB")
 }

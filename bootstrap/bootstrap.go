@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/template/html/v2"
 	"github.com/hilmiikhsan/simple-messaging-app/app/controllers"
+	"github.com/hilmiikhsan/simple-messaging-app/app/repository/message"
 	"github.com/hilmiikhsan/simple-messaging-app/app/repository/user_session"
 	"github.com/hilmiikhsan/simple-messaging-app/app/ws"
 	"github.com/hilmiikhsan/simple-messaging-app/pkg/database"
@@ -18,6 +19,8 @@ func NewApplication() *fiber.App {
 	env.SetupEnvFile()
 	db, cfg := database.SetupDatabase()
 
+	database.SetupMongoDB()
+
 	engine := html.New("./views", ".html")
 	app := fiber.New(fiber.Config{Views: engine})
 	app.Use(recover.New())
@@ -25,9 +28,13 @@ func NewApplication() *fiber.App {
 	app.Get("/dashboard", monitor.New())
 	app.Get("/", controllers.RenderUI)
 
+	userSessionRepo := user_session.NewRepository(db)
+	messageRepo := message.NewRepository(db)
+
+	ws := ws.NewService(cfg, messageRepo)
+
 	go ws.ServeWSMessaging(app)
 
-	userSessionRepo := user_session.NewRepository(db)
 	middleware := router.NewMiddleware(userSessionRepo)
 
 	apiRouter := router.NewApiRouter(db, cfg, middleware)

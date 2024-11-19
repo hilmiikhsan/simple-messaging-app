@@ -3,10 +3,13 @@ package router
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
+	messageController "github.com/hilmiikhsan/simple-messaging-app/app/controllers/message"
 	userController "github.com/hilmiikhsan/simple-messaging-app/app/controllers/user"
+	"github.com/hilmiikhsan/simple-messaging-app/app/repository/message"
 	userRepository "github.com/hilmiikhsan/simple-messaging-app/app/repository/user"
 	userSessionRepository "github.com/hilmiikhsan/simple-messaging-app/app/repository/user_session"
 	userService "github.com/hilmiikhsan/simple-messaging-app/app/service/user"
+	"github.com/hilmiikhsan/simple-messaging-app/app/ws"
 	"github.com/hilmiikhsan/simple-messaging-app/pkg/database"
 	"gorm.io/gorm"
 )
@@ -39,6 +42,17 @@ func (h ApiRouter) InstallRouter(app *fiber.App) {
 	userV1Group.Post("/login", userController.Login)
 	userV1Group.Delete("/logout", h.middleware.MiddlewareValidateAuth, userController.Logout)
 	userV1Group.Put("/refresh-token", h.middleware.MiddlewareRefreshToken, userController.RefreshToken)
+
+	messageRepo := message.NewRepository(h.db)
+
+	messageService := ws.NewService(h.cfg, messageRepo)
+
+	messageController := messageController.NewController(app, messageService)
+
+	messageGroup := app.Group("/message")
+	messageV1Group := messageGroup.Group("/v1")
+
+	messageV1Group.Get("/history", h.middleware.MiddlewareValidateAuth, messageController.GetMessageHistory)
 }
 
 func NewApiRouter(db *gorm.DB, cfg *database.Config, middleware *Middleware) *ApiRouter {
