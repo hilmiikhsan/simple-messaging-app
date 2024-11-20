@@ -1,0 +1,31 @@
+2024/11/21 02:02:31 Connected to MongoDB
+2024/11/21 02:02:44 username already exists
+2024/11/21 02:02:44 failed to register new user: username already exists
+2024/11/21 02:02:44 username already exists
+2024/11/21 02:02:45 username already exists
+2024/11/21 02:02:45 failed to register new user: username already exists
+2024/11/21 02:02:45 username already exists
+2024/11/21 02:02:45 username already exists
+2024/11/21 02:02:45 failed to register new user: username already exists
+2024/11/21 02:02:45 username already exists
+2024/11/21 02:03:00 Authorization header is empty
+2024/11/21 02:03:35 Error getting all message:  server selection error: server selection timeout, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.bdmrp.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, { Addr: cluster0-shard-00-01.bdmrp.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, { Addr: cluster0-shard-00-02.bdmrp.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, ] }
+2024/11/21 02:03:35 Error getting all message:  server selection error: server selection timeout, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.bdmrp.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, { Addr: cluster0-shard-00-01.bdmrp.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, { Addr: cluster0-shard-00-02.bdmrp.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, ] }
+2024/11/21 02:03:35 failed to get message history: server selection error: server selection timeout, current topology: { Type: ReplicaSetNoPrimary, Servers: [{ Addr: cluster0-shard-00-00.bdmrp.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, { Addr: cluster0-shard-00-01.bdmrp.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, { Addr: cluster0-shard-00-02.bdmrp.mongodb.net:27017, Type: Unknown, Last error: remote error: tls: internal error }, ] }
+2024/11/21 02:06:15 failed to validate request body: Key: 'LoginRequest.Password' Error:Field validation for 'Password' failed on the 'required' tag
+2024/11/21 02:06:16 failed to validate request body: Key: 'LoginRequest.Password' Error:Field validation for 'Password' failed on the 'required' tag
+2024/11/21 02:18:24 Connected to MongoDB
+2024/11/21 02:18:28 failed to validate request body: Key: 'LoginRequest.Password' Error:Field validation for 'Password' failed on the 'required' tag
+2024/11/21 02:18:28 failed to validate request body: Key: 'LoginRequest.Password' Error:Field validation for 'Password' failed on the 'required' tag
+2024/11/21 02:18:37 username already exists
+2024/11/21 02:18:37 failed to register new user: username already exists
+2024/11/21 02:18:37 username already exists
+2024/11/21 02:18:39 Failed to get user session by token:  record not found
+2024/11/21 02:18:41 failed to parse jwt:  token has invalid claims: token is expired
+2024/11/21 02:18:41 Failed to validate token:  failed to parse jwt: token has invalid claims: token is expired
+2024/11/21 02:33:49 Connected to MongoDB
+2024/11/21 02:35:09 Failed to get user:  record not found
+2024/11/21 02:43:54 Connected to MongoDB
+2024/11/21 02:52:08 Connected to MongoDB
+2024/11/21 02:52:30 Failed to get user:  record not found
+2024/11/21 03:03:33 Connected to MongoDB

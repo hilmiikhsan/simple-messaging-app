@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"time"
 
+	"log"
+
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
 	"github.com/hilmiikhsan/simple-messaging-app/app/models"
 	"github.com/hilmiikhsan/simple-messaging-app/pkg/env"
+	"go.elastic.co/apm"
 )
 
 func (s *service) ServeWSMessaging(app *fiber.App) {
@@ -27,16 +29,21 @@ func (s *service) ServeWSMessaging(app *fiber.App) {
 		for {
 			var message models.MessagePayload
 			if err := c.ReadJSON(&message); err != nil {
-				log.Error("Error reading message: ", err)
+				log.Println("Error reading message: ", err)
 				break
 			}
 
+			tx := apm.DefaultTracer.StartTransaction("Send Message", "ws")
+			ctx := apm.ContextWithTransaction(context.Background(), tx)
+
 			message.Date = time.Now()
 
-			err := s.messageRepository.InsertNewMessage(context.Background(), message)
+			err := s.messageRepository.InsertNewMessage(ctx, message)
 			if err != nil {
 				fmt.Println("Error inserting message: ", err)
 			}
+
+			tx.End()
 
 			broadcast <- message
 		}
@@ -48,7 +55,7 @@ func (s *service) ServeWSMessaging(app *fiber.App) {
 			for client := range clients {
 				err := client.WriteJSON(message)
 				if err != nil {
-					log.Error("Error sending message: ", err)
+					log.Println("Error sending message: ", err)
 					client.Close()
 					delete(clients, client)
 				}
@@ -60,9 +67,12 @@ func (s *service) ServeWSMessaging(app *fiber.App) {
 }
 
 func (s *service) GetMessageHistory(ctx context.Context) ([]models.MessagePayload, error) {
+	span, _ := apm.StartSpan(ctx, "GetMessageHistory", "service")
+	defer span.End()
+
 	resp, err := s.messageRepository.GetAllMessage(ctx)
 	if err != nil {
-		log.Error("Error getting all message: ", err)
+		log.Println("Error getting all message: ", err)
 		return resp, err
 	}
 

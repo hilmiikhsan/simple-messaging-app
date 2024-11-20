@@ -1,6 +1,10 @@
 package bootstrap
 
 import (
+	"io"
+	"log"
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
@@ -13,13 +17,18 @@ import (
 	"github.com/hilmiikhsan/simple-messaging-app/pkg/database"
 	"github.com/hilmiikhsan/simple-messaging-app/pkg/env"
 	"github.com/hilmiikhsan/simple-messaging-app/pkg/router"
+	"go.elastic.co/apm"
 )
 
 func NewApplication() *fiber.App {
 	env.SetupEnvFile()
+	SetupLogfile()
+
 	db, cfg := database.SetupDatabase()
 
 	database.SetupMongoDB()
+
+	apm.DefaultTracer.Service.Name = "simple-mesaging-app"
 
 	engine := html.New("./views", ".html")
 	app := fiber.New(fiber.Config{Views: engine})
@@ -41,4 +50,13 @@ func NewApplication() *fiber.App {
 	apiRouter.InstallRouter(app)
 
 	return app
+}
+
+func SetupLogfile() {
+	logFile, err := os.OpenFile("./logs/simple_messaging_app.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+	if err != nil {
+		log.Fatal(err)
+	}
+	mw := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(mw)
 }

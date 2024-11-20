@@ -11,6 +11,7 @@ import (
 	userService "github.com/hilmiikhsan/simple-messaging-app/app/service/user"
 	"github.com/hilmiikhsan/simple-messaging-app/app/ws"
 	"github.com/hilmiikhsan/simple-messaging-app/pkg/database"
+	"go.elastic.co/apm/module/apmfiber"
 	"gorm.io/gorm"
 )
 
@@ -36,6 +37,7 @@ func (h ApiRouter) InstallRouter(app *fiber.App) {
 	userController := userController.NewController(app, userService)
 
 	userGroup := app.Group("/user")
+	userGroup.Use(apmfiber.Middleware())
 	userV1Group := userGroup.Group("/v1")
 
 	userV1Group.Post("/register", userController.Register)
@@ -50,6 +52,7 @@ func (h ApiRouter) InstallRouter(app *fiber.App) {
 	messageController := messageController.NewController(app, messageService)
 
 	messageGroup := app.Group("/message")
+	messageGroup.Use(apmfiber.Middleware())
 	messageV1Group := messageGroup.Group("/v1")
 
 	messageV1Group.Get("/history", h.middleware.MiddlewareValidateAuth, messageController.GetMessageHistory)
